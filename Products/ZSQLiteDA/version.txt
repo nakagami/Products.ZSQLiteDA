@@ -1,1 +1,1 @@
-ZSQLiteDA-0.5.0
+ZSQLiteDA-0.6.0
