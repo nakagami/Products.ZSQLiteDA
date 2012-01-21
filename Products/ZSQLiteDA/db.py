@@ -11,10 +11,7 @@
 #
 ##############################################################################
 import os
-try:
-    import sqlite3
-except:
-    from pysqlite2 import dbapi2 as sqlite3
+import sqlite3
 
 from string import strip, split
 from DateTime import DateTime
