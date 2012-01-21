@@ -1,0 +1,14 @@
+README.txt
+setup.py
+Products/__init__.py
+Products.ZSQLiteDA.egg-info/PKG-INFO
+Products.ZSQLiteDA.egg-info/SOURCES.txt
+Products.ZSQLiteDA.egg-info/dependency_links.txt
+Products.ZSQLiteDA.egg-info/entry_points.txt
+Products.ZSQLiteDA.egg-info/namespace_packages.txt
+Products.ZSQLiteDA.egg-info/not-zip-safe
+Products.ZSQLiteDA.egg-info/requires.txt
+Products.ZSQLiteDA.egg-info/top_level.txt
+Products/ZSQLiteDA/__init__.py
+Products/ZSQLiteDA/tests.py
+Products/ZSQLiteDA/zope2.py

@@ -1,0 +1,26 @@
+Metadata-Version: 1.0
+Name: Products.ZSQLiteDA
+Version: 0.6
+Summary: SQLite database adapter for Zope2
+Home-page: https://github.com/nakagami/ZSQLiteDA
+Author: Hajime Nakagami
+Author-email: nakagami@gmail.com
+License: BSD
+Description: Introduction
+        ============
+        
+        
+        
+        This product may contain traces of nuts.
+        
+        Changelog
+        =========
+        
+        0.6dev (unreleased)
+        -------------------
+        
+        - Initial release
+        
+Keywords: SQLite
+Platform: UNKNOWN
+Classifier: Programming Language :: Python
