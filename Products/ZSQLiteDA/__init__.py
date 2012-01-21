@@ -21,8 +21,8 @@ class SQLiteError(Exception):
 class QueryError(SQLiteError):
     pass
 
-misc_={'conn':
-       ImageFile('Shared/DC/ZRDB/www/DBAdapterFolder_icon.gif')}
+misc_={'conn': ImageFile(
+               os.path.join('images', 'DBAdapterFolder_icon.gif'), globals())}
 
 DA=None
 def getDA():
