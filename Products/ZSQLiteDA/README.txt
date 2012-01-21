@@ -1,14 +1,9 @@
-Products.ZSQLiteDA Package Readme
-=========================
+ZSQLiteDA
 
-Overview
---------
+  Hajime Nakagami &lt;nakagami@gmail.com&gt;
 
-SQLite database adapter for Zope2
+  The ZSQLiteDA product provides support for SQLite database adapter
+  objects in the Zope 2.
 
-
-Your tests here
----------------
-
-    >>> 1 + 1
-    3
+  To add or use additional databases, simply add (or link) additional
+  database file to your 'var/sqlite' directory.
