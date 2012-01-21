@@ -9,6 +9,9 @@ Products.ZSQLiteDA.egg-info/namespace_packages.txt
 Products.ZSQLiteDA.egg-info/not-zip-safe
 Products.ZSQLiteDA.egg-info/requires.txt
 Products.ZSQLiteDA.egg-info/top_level.txt
+Products/ZSQLiteDA/DA.py
+Products/ZSQLiteDA/DABase.py
 Products/ZSQLiteDA/__init__.py
+Products/ZSQLiteDA/db.py
 Products/ZSQLiteDA/tests.py
 Products/ZSQLiteDA/zope2.py
