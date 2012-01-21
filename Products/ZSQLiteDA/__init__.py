@@ -10,11 +10,6 @@
 # FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
-__doc__='''Generic Database Adapter Package Registration
-
-$Id: __init__.py,v 1.7 2009/08/08 07:56:34 nakagami Exp $'''
-__version__='$Revision: 1.7 $'[11:-2]
-
 import os
 from App.ImageFile import ImageFile
 classes=('DA.Connection',)

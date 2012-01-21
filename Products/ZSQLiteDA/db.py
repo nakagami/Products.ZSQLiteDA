@@ -10,10 +10,6 @@
 # FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
-
-'''$Id: db.py,v 1.22 2009/12/15 04:31:34 nakagami Exp $'''
-__version__='$Revision: 1.22 $'[11:-2]
-
 import os
 try:
     import sqlite3

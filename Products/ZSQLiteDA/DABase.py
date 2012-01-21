@@ -10,11 +10,6 @@
 # FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
-__doc__='''Database Connection
-
-$Id: DABase.py,v 1.7 2009/08/08 08:18:24 nakagami Exp $'''
-__version__='$Revision: 1.7 $'[11:-2]
-
 from db import manage_DataSources
 import Shared.DC.ZRDB.Connection, sys
 from App.special_dtml import HTMLFile
