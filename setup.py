@@ -24,7 +24,7 @@ setup(name='Products.ZSQLiteDA',
       zip_safe=False,
       install_requires=[
           'setuptools',
-          # -*- Extra requirements: -*-
+          'ThreadLock',
       ],
       entry_points="""
       # -*- Entry points: -*-
