@@ -71,7 +71,8 @@ class DB(Shared.DC.ZRDB.THUNK.THUNKED_TM):
         return sql
 
     def open(self):
-        self.db = sqlite3.connect(os.path.join(data_dir, self.connection))
+        self.db = sqlite3.connect(os.path.join(data_dir, self.connection),
+                                    check_same_thread = False)
         self.opened=DateTime()
 
     def close(self):
