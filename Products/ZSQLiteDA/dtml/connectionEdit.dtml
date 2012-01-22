@@ -36,7 +36,7 @@
     <div class="form-text">
     <em>
 	  Additional data sources may be created by making additional
-	  database file in the <code>var/sqlite</code> subdirectory of
+	  database file in the <code><dtml-var data_dir></code> subdirectory of
           your Zope installation.
     </em>
     </div>

@@ -11,9 +11,11 @@
 #
 ##############################################################################
 import os
+import Globals
 from App.ImageFile import ImageFile
 classes=('DA.Connection',)
 database_type='SQLite'
+data_dir=os.path.abspath(os.path.join(Globals.data_dir, 'sqlite'))
 
 class SQLiteError(Exception):
     pass
@@ -43,6 +45,7 @@ def manage_addZSQLiteConnectionForm(self, REQUEST, *args, **kw):
     return DA.addConnectionForm(
         self, self, REQUEST,
         database_type=database_type,
+        data_dir=data_dir,
         data_sources=DA.data_sources)
 
 def manage_addZSQLiteConnection(

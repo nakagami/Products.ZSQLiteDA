@@ -37,7 +37,7 @@
     <td align="left" valign="top">
     <div class="form-text">
     <em>
-      Please copy or create database file in the <code>var/sqlite</code>
+      Please copy or create database file in the <code><dtml-var "data_dir"></code>
       subdirectory of your Zope installation, if you need.
     </em>
     </div>
@@ -63,7 +63,7 @@
 </table>
 </form>
 <dtml-else>
-  Please add database file to the <code>var/sqlite</code> subdirectory of your Zope installation.
+  Please add database file to the <code><dtml-var data_dir></code> subdirectory of your Zope installation.
 </dtml-if>
 
 <dtml-var manage_page_footer>

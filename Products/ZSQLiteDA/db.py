@@ -16,11 +16,8 @@ import sqlite3
 from string import strip, split
 from DateTime import DateTime
 import Shared.DC.ZRDB.THUNK
-from App.config import getConfiguration
 
-data_dir=os.path.join(getConfiguration().instancehome, 'var', 'sqlite')
-
-from Products.ZSQLiteDA import SQLiteError, QueryError
+from Products.ZSQLiteDA import SQLiteError, QueryError, data_dir
 
 def manage_DataSources():
 
