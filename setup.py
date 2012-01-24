@@ -3,7 +3,7 @@ import os
 
 version = '0.6.0'
 
-setup(name='Products.SQLiteDA',
+setup(name='Products.ZSQLiteDA',
       version=version,
       description="SQLite database adapter for Zope2",
       long_description=open("README.txt").read(),
