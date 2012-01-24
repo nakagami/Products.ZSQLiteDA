@@ -11,6 +11,8 @@ setup(name='Products.SQLiteDA',
       # http://pypi.python.org/pypi?:action=list_classifiers
       classifiers=[
         "Programming Language :: Python",
+        "Framework :: Zope2",
+        "License :: OSI Approved :: Zope Public License",
         ],
       keywords='SQLite',
       author='Hajime Nakagami',
