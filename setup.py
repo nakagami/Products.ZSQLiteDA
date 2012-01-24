@@ -3,7 +3,7 @@ import os
 
 version = '0.6'
 
-setup(name='Products.ZSQLiteDA',
+setup(name='Products.SQLiteDA',
       version=version,
       description="SQLite database adapter for Zope2",
       long_description=open("README.txt").read() + "\n" +
@@ -16,7 +16,7 @@ setup(name='Products.ZSQLiteDA',
       keywords='SQLite',
       author='Hajime Nakagami',
       author_email='nakagami@gmail.com',
-      url='https://github.com/nakagami/Products.ZSQLiteDA',
+      url='https://github.com/nakagami/Products.SQLiteDA',
       license='ZPL',
       packages=find_packages(exclude=['ez_setup']),
       namespace_packages=['Products'],
