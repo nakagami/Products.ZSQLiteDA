@@ -15,8 +15,3 @@ Products/ZSQLiteDA/__init__.py
 Products/ZSQLiteDA/db.py
 Products/ZSQLiteDA/tests.py
 Products/ZSQLiteDA/zope2.py
-Products/SQLiteDA/dtml/browse.dtml
-Products/SQLiteDA/dtml/connectionAdd.dtml
-Products/SQLiteDA/dtml/connectionEdit.dtml
-Products/SQLiteDA/images/DBAdapterFolder_icon.gif
-Products/SQLiteDA/images/table.gif
