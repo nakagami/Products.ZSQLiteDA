@@ -6,8 +6,7 @@ version = '0.6'
 setup(name='Products.SQLiteDA',
       version=version,
       description="SQLite database adapter for Zope2",
-      long_description=open("README.txt").read() + "\n" +
-                       open(os.path.join("docs", "HISTORY.txt")).read(),
+      long_description=open("README.txt").read(),
       # Get more strings from
       # http://pypi.python.org/pypi?:action=list_classifiers
       classifiers=[
@@ -16,7 +15,7 @@ setup(name='Products.SQLiteDA',
       keywords='SQLite',
       author='Hajime Nakagami',
       author_email='nakagami@gmail.com',
-      url='https://github.com/nakagami/Products.SQLiteDA',
+      url='https://github.com/nakagami/Products.ZSQLiteDA',
       license='ZPL',
       packages=find_packages(exclude=['ez_setup']),
       namespace_packages=['Products'],
