@@ -64,7 +64,7 @@ class DB(Shared.DC.ZRDB.THUNK.THUNKED_TM):
             result.append({'TABLE_NAME':r[0], 'TABLE_TYPE':r[1]})
         self._finish()
         return result
-	
+
     def sqlscript(self, table_name):
         self._begin()
         c = self.db.cursor()
@@ -74,8 +74,10 @@ class DB(Shared.DC.ZRDB.THUNK.THUNKED_TM):
         return sql
 
     def open(self):
-        self.db = sqlite3.connect(os.path.join(data_dir, self.connection),
-                                    check_same_thread = False)
+        connection = self.connection
+        if connection != ':memory:':
+            connection = os.path.join(data_dir, connection)
+        self.db = sqlite3.connect(connection, check_same_thread = False)
         self.opened=DateTime()
 
     def close(self):
@@ -135,7 +137,7 @@ class DB(Shared.DC.ZRDB.THUNK.THUNKED_TM):
         if self.page_charset:
             conv_result=[]
             for r in result:
-                rs = []        
+                rs = []
                 for item in r:
                     try:
                         rs.append(item.encode(self.page_charset, 'ignore'))
@@ -143,7 +145,7 @@ class DB(Shared.DC.ZRDB.THUNK.THUNKED_TM):
                         rs.append(item)
                 conv_result.append(rs)
             result = conv_result
-                    
+
         return items, result
 
     def _begin(self):

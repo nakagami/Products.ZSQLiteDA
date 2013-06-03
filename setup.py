@@ -1,12 +1,12 @@
 from setuptools import setup, find_packages
-import os
+
 
 version = '0.6.0'
 
 setup(name='Products.ZSQLiteDA',
       version=version,
       description="SQLite database adapter for Zope2",
-      long_description=open("README.txt").read(),
+      long_description=open("README.rst").read(),
       # Get more strings from
       # http://pypi.python.org/pypi?:action=list_classifiers
       classifiers=[
