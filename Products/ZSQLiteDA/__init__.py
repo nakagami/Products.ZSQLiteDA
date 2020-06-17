@@ -15,13 +15,7 @@ from App.ImageFile import ImageFile
 from . import DA
 
 database_type='SQLite'
-data_dir=os.path.abspath(os.path.join('var', 'sqlite'))
-
-class SQLiteError(Exception):
-    pass
-
-class QueryError(SQLiteError):
-    pass
+data_dir=os.path.abspath(os.path.join(os.environ['INSTANCE_HOME'], 'var', 'sqlite'))
 
 misc_={'conn': ImageFile('images/DBAdapterFolder_icon.gif', globals()),
         'table': ImageFile('images/table.gif', globals()),
@@ -34,7 +28,6 @@ __module_aliases__=(
 
 def manage_addZSQLiteConnectionForm(self, REQUEST, *args, **kw):
     " "
-    DA=getDA()
     return DA.addConnectionForm(
         self, self, REQUEST,
         database_type=database_type,
@@ -44,7 +37,7 @@ def manage_addZSQLiteConnectionForm(self, REQUEST, *args, **kw):
 def manage_addZSQLiteConnection(
     self, id, title, connection, REQUEST=None):
     " "
-    return getDA().manage_addZSQLiteConnection(
+    return DA.manage_addZSQLiteConnection(
         self, id, title, connection, REQUEST)
 
 def initialize(context):

@@ -16,7 +16,7 @@ import sqlite3
 from DateTime import DateTime
 import Shared.DC.ZRDB.THUNK
 
-data_dir=os.path.abspath(os.path.join('var', 'sqlite'))
+data_dir=os.path.abspath(os.path.join(os.environ['INSTANCE_HOME'], 'var', 'sqlite'))
 
 def manage_DataSources():
 
