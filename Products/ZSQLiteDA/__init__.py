@@ -11,11 +11,11 @@
 #
 ##############################################################################
 import os
-import Globals
 from App.ImageFile import ImageFile
-classes=('DA.Connection',)
+from . import DA
+
 database_type='SQLite'
-data_dir=os.path.abspath(os.path.join(Globals.data_dir, 'sqlite'))
+data_dir=os.path.abspath(os.path.join('var', 'sqlite'))
 
 class SQLiteError(Exception):
     pass
@@ -27,14 +27,6 @@ misc_={'conn': ImageFile('images/DBAdapterFolder_icon.gif', globals()),
         'table': ImageFile('images/table.gif', globals()),
 }
 
-DA=None
-def getDA():
-    global DA
-    if DA is None:
-        import DA
-    return DA
-
-getDA()
 
 __module_aliases__=(
     ('Products.AqueductSQLite.DA', DA),

@@ -16,7 +16,6 @@ try:
 except:
     from pysqlite2 import dbapi2 as sqlite3
 
-from string import strip, split
 from DateTime import DateTime
 import Shared.DC.ZRDB.THUNK
 
@@ -28,14 +27,14 @@ def manage_DataSources():
         try:
             os.mkdir(data_dir)
         except:
-            raise SQLiteError, (
+            raise SQLiteError(
                 """
                 The Zope SQLite Database Adapter requires the
                 existence of the directory, <code>%s</code>.  An error
                 occurred  while trying to create this directory.
                 """ % data_dir)
     if not os.path.isdir(data_dir):
-        raise SQLiteError, (
+        raise SQLiteError(
             """
             The Zope SQLite Database Adapter requires the
             existence of the directory, <code>%s</code>.  This
@@ -89,11 +88,13 @@ class DB(Shared.DC.ZRDB.THUNK.THUNKED_TM):
         self.page_charset = page_charset
         self.open()
 
-    def query(self,query_string, max_rows=None):
+    def query(self, query_string, max_rows=None):
         self._begin()
         c = self.db.cursor()
-        queries=filter(None, map(strip,split(query_string, '\0')))
-        if not queries: raise 'Query Error', 'empty query'
+
+        queries=filter(None, [q.strip() for q in sql_string.split('\0')])
+        if not queries:
+            raise QueryError('empty query')
         desc=None
         result=[]
         for qs in queries:
@@ -104,7 +105,7 @@ class DB(Shared.DC.ZRDB.THUNK.THUNKED_TM):
             if d is None: continue
             if desc is None: desc=d
             elif d != desc:
-                raise QueryError, (
+                raise QueryError(
                     'Multiple incompatible selects in '
                     'multiple sql-statement query'
                     )

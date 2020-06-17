@@ -19,7 +19,7 @@ __version__='$Revision: 1.10 $'[11:-2]
 import six
 from six.moves._thread import allocate_lock
 
-from db import DB, manage_DataSources
+from .db import DB, manage_DataSources
 import sys, DABase
 from App.special_dtml import HTMLFile
 import Shared.DC.ZRDB.Connection
