@@ -16,14 +16,17 @@ __doc__='''%s Database Connection
 $Id: DA.py,v 1.10 2009/08/08 08:18:24 nakagami Exp $''' % database_type
 __version__='$Revision: 1.10 $'[11:-2]
 
+import six
+from six.moves._thread import allocate_lock
+
 from db import DB, manage_DataSources
 import sys, DABase
 from App.special_dtml import HTMLFile
-import Shared.DC.ZRDB.Connection, ThreadLock
+import Shared.DC.ZRDB.Connection
 _Connection=Shared.DC.ZRDB.Connection.Connection
 
 _connections={}
-_connections_lock=ThreadLock.allocate_lock()
+_connections_lock=allocate_lock()
 
 data_sources=manage_DataSources
 
