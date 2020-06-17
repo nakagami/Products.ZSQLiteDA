@@ -16,11 +16,10 @@ __doc__='''%s Database Connection
 $Id: DA.py,v 1.10 2009/08/08 08:18:24 nakagami Exp $''' % database_type
 __version__='$Revision: 1.10 $'[11:-2]
 
-import six
 from six.moves._thread import allocate_lock
 
 from .db import DB, manage_DataSources
-import sys, DABase
+from .DABase import Connection as BaseConnection
 from App.special_dtml import HTMLFile
 import Shared.DC.ZRDB.Connection
 _Connection=Shared.DC.ZRDB.Connection.Connection
@@ -40,7 +39,7 @@ def manage_addZSQLiteConnection(
         id, title, connection, None))
     if REQUEST is not None: return self.manage_main(self,REQUEST)
 
-class Connection(DABase.Connection):
+class Connection(BaseConnection):
     " "
     database_type=database_type
     id='%s_database_connection' % database_type

@@ -11,15 +11,12 @@
 #
 ##############################################################################
 import os
-try:
-    import sqlite3
-except:
-    from pysqlite2 import dbapi2 as sqlite3
+import sqlite3
 
 from DateTime import DateTime
 import Shared.DC.ZRDB.THUNK
 
-from Products.ZSQLiteDA import SQLiteError, QueryError, data_dir
+data_dir=os.path.abspath(os.path.join('var', 'sqlite'))
 
 def manage_DataSources():
 
@@ -27,14 +24,14 @@ def manage_DataSources():
         try:
             os.mkdir(data_dir)
         except:
-            raise SQLiteError(
+            raise sqlite3.OperationalError(
                 """
                 The Zope SQLite Database Adapter requires the
                 existence of the directory, <code>%s</code>.  An error
                 occurred  while trying to create this directory.
                 """ % data_dir)
     if not os.path.isdir(data_dir):
-        raise SQLiteError(
+        raise sqlite3.OperationalError(
             """
             The Zope SQLite Database Adapter requires the
             existence of the directory, <code>%s</code>.  This
@@ -94,7 +91,7 @@ class DB(Shared.DC.ZRDB.THUNK.THUNKED_TM):
 
         queries=filter(None, [q.strip() for q in sql_string.split('\0')])
         if not queries:
-            raise QueryError('empty query')
+            raise sqlite3.OperationalError('empty query')
         desc=None
         result=[]
         for qs in queries:
@@ -105,7 +102,7 @@ class DB(Shared.DC.ZRDB.THUNK.THUNKED_TM):
             if d is None: continue
             if desc is None: desc=d
             elif d != desc:
-                raise QueryError(
+                raise sqlite3.OperationalError(
                     'Multiple incompatible selects in '
                     'multiple sql-statement query'
                     )
