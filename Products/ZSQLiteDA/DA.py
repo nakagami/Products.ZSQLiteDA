@@ -46,6 +46,7 @@ class Connection(BaseConnection):
     id='%s_database_connection' % database_type
     meta_type=title='Z %s Database Connection' % database_type
     icon='misc_/Z%sDA/conn' % database_type
+    data_dir=data_dir
 
     manage_properties=HTMLFile('dtml/connectionEdit', globals(),
                                        data_sources=data_sources)
