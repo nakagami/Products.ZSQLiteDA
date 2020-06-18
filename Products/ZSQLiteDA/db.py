@@ -89,14 +89,12 @@ class DB(Shared.DC.ZRDB.THUNK.THUNKED_TM):
         self._begin()
         c = self.db.cursor()
 
-        queries=filter(None, [q.strip() for q in sql_string.split('\0')])
+        queries=filter(None, [q.strip() for q in query_string.split('\0')])
         if not queries:
             raise sqlite3.OperationalError('empty query')
         desc=None
         result=[]
         for qs in queries:
-            if self.page_charset:
-                qs = unicode(qs, self.page_charset)
             c.execute(qs)
             d=c.description
             if d is None: continue
