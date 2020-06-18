@@ -24,7 +24,6 @@ setup(name='Products.ZSQLiteDA',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
-        'six',
         'Products.ZSQLMethods',
       ],
       entry_points="""

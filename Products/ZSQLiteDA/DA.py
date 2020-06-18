@@ -16,7 +16,7 @@ __doc__='''%s Database Connection
 $Id: DA.py,v 1.10 2009/08/08 08:18:24 nakagami Exp $''' % database_type
 __version__='$Revision: 1.10 $'[11:-2]
 
-from six.moves._thread import allocate_lock
+from _thread import allocate_lock
 
 from .db import DB, manage_DataSources
 from .DABase import Connection as BaseConnection
