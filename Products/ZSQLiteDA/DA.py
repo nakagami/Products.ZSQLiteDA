@@ -29,7 +29,7 @@ _connections_lock=allocate_lock()
 
 data_sources=manage_DataSources
 
-manage_addConnectionForm=HTMLFile('dtml/connectionAdd',globals())
+manage_addZSQLiteConnectionForm=HTMLFile('dtml/connectionAdd',globals())
 
 def manage_addZSQLiteConnection(
     self, id, title, connection, REQUEST=None):
