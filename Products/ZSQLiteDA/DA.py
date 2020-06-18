@@ -18,7 +18,7 @@ __version__='$Revision: 1.10 $'[11:-2]
 
 from _thread import allocate_lock
 
-from .db import DB, manage_DataSources
+from .db import DB, manage_DataSources, data_dir
 from .DABase import Connection as BaseConnection
 from App.special_dtml import HTMLFile
 import Shared.DC.ZRDB.Connection
@@ -29,7 +29,8 @@ _connections_lock=allocate_lock()
 
 data_sources=manage_DataSources
 
-addConnectionForm=HTMLFile('dtml/connectionAdd',globals())
+manage_addConnectionForm=HTMLFile('dtml/connectionAdd',globals())
+
 def manage_addZSQLiteConnection(
     self, id, title, connection, REQUEST=None):
     """Add a DB connection to a folder"""
