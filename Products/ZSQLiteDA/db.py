@@ -51,26 +51,6 @@ class DB(Shared.DC.ZRDB.THUNK.THUNKED_TM):
 
     opened=''
 
-    def tables(self,*args,**kw):
-        self._begin()
-        c = self.db.cursor()
-        c.execute("SELECT name, type FROM sqlite_master WHERE type='table' or type='view'")
-
-        result = []
-        rs = c.fetchall()
-        for r in rs:
-            result.append({'TABLE_NAME':r[0], 'TABLE_TYPE':r[1]})
-        self._finish()
-        return result
-
-    def sqlscript(self, table_name):
-        self._begin()
-        c = self.db.cursor()
-        c.execute("SELECT sql FROM sqlite_master WHERE name='%s'" % table_name)
-        sql = c.fetchone()[0]
-        self._finish()
-        return sql
-
     def open(self):
         connection = self.connection
         if connection != ':memory:':
