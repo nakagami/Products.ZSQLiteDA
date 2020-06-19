@@ -16,18 +16,21 @@ __doc__='''%s Database Connection
 $Id: DA.py,v 1.10 2009/08/08 08:18:24 nakagami Exp $''' % database_type
 __version__='$Revision: 1.10 $'[11:-2]
 
-from db import DB, manage_DataSources
-import sys, DABase
+from _thread import allocate_lock
+
+from .db import DB, manage_DataSources, data_dir
+from .DABase import Connection as BaseConnection
 from App.special_dtml import HTMLFile
-import Shared.DC.ZRDB.Connection, ThreadLock
+import Shared.DC.ZRDB.Connection
 _Connection=Shared.DC.ZRDB.Connection.Connection
 
 _connections={}
-_connections_lock=ThreadLock.allocate_lock()
+_connections_lock=allocate_lock()
 
 data_sources=manage_DataSources
 
-addConnectionForm=HTMLFile('dtml/connectionAdd',globals())
+manage_addZSQLiteConnectionForm=HTMLFile('dtml/connectionAdd',globals())
+
 def manage_addZSQLiteConnection(
     self, id, title, connection, REQUEST=None):
     """Add a DB connection to a folder"""
@@ -37,12 +40,13 @@ def manage_addZSQLiteConnection(
         id, title, connection, None))
     if REQUEST is not None: return self.manage_main(self,REQUEST)
 
-class Connection(DABase.Connection):
+class Connection(BaseConnection):
     " "
     database_type=database_type
     id='%s_database_connection' % database_type
     meta_type=title='Z %s Database Connection' % database_type
     icon='misc_/Z%sDA/conn' % database_type
+    data_dir=data_dir
 
     manage_properties=HTMLFile('dtml/connectionEdit', globals(),
                                        data_sources=data_sources)

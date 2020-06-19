@@ -11,16 +11,14 @@
 #
 ##############################################################################
 import os
-try:
-    import sqlite3
-except:
-    from pysqlite2 import dbapi2 as sqlite3
+import sqlite3
 
-from string import strip, split
 from DateTime import DateTime
 import Shared.DC.ZRDB.THUNK
 
-from Products.ZSQLiteDA import SQLiteError, QueryError, data_dir
+data_dir= os.path.abspath(
+    os.path.join(os.path.dirname(os.environ['CLIENT_HOME']), 'sqlite')
+)
 
 def manage_DataSources():
 
@@ -28,14 +26,14 @@ def manage_DataSources():
         try:
             os.mkdir(data_dir)
         except:
-            raise SQLiteError, (
+            raise sqlite3.OperationalError(
                 """
                 The Zope SQLite Database Adapter requires the
                 existence of the directory, <code>%s</code>.  An error
                 occurred  while trying to create this directory.
                 """ % data_dir)
     if not os.path.isdir(data_dir):
-        raise SQLiteError, (
+        raise sqlite3.OperationalError(
             """
             The Zope SQLite Database Adapter requires the
             existence of the directory, <code>%s</code>.  This
@@ -89,22 +87,22 @@ class DB(Shared.DC.ZRDB.THUNK.THUNKED_TM):
         self.page_charset = page_charset
         self.open()
 
-    def query(self,query_string, max_rows=None):
+    def query(self, query_string, max_rows=None):
         self._begin()
         c = self.db.cursor()
-        queries=filter(None, map(strip,split(query_string, '\0')))
-        if not queries: raise 'Query Error', 'empty query'
+
+        queries=filter(None, [q.strip() for q in query_string.split('\0')])
+        if not queries:
+            raise sqlite3.OperationalError('empty query')
         desc=None
         result=[]
         for qs in queries:
-            if self.page_charset:
-                qs = unicode(qs, self.page_charset)
             c.execute(qs)
             d=c.description
             if d is None: continue
             if desc is None: desc=d
             elif d != desc:
-                raise QueryError, (
+                raise sqlite3.OperationalError(
                     'Multiple incompatible selects in '
                     'multiple sql-statement query'
                     )
