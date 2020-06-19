@@ -56,30 +56,11 @@ class Connection(Shared.DC.ZRDB.Connection.Connection):
             return self._v_database_connection.opened
         return ''
 
-    def title_and_id(self):
-        s=self.inheritedAttribute('title_and_id')
-        if (hasattr(self, '_v_database_connection') and
-            self._v_database_connection.opened):
-            s="%s, which is connected" % s
-        else:
-            s="%s, which is <font color=red> not connected</font>" % s
-        return s
-
-    def title_or_id(self):
-        s=self.inheritedAttribute('title_and_id')
-        if (hasattr(self, '_v_database_connection') and
-            self._v_database_connection.opened):
-            s="%s (connected)" % s
-        else:
-            s="%s (<font color=red> not connected</font>)" % s
-        return s
-
     def connect(self,s):
         _connections_lock.acquire()
         try:
             c=_connections
-            page_charset = getattr(self, 'management_page_charset', 'utf-8')
-            self._v_database_connection=c[s]=DB(s, page_charset)
+            self._v_database_connection=c[s]=DB(s)
             return self
         finally:
             _connections_lock.release()

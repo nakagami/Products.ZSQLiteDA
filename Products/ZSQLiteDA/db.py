@@ -82,9 +82,8 @@ class DB(Shared.DC.ZRDB.THUNK.THUNKED_TM):
         self.db.close()
         self.opened = None
 
-    def __init__(self,connection, page_charset):
+    def __init__(self,connection):
         self.connection=connection
-        self.page_charset = page_charset
         self.open()
 
     def query(self, query_string, max_rows=None):
@@ -131,18 +130,6 @@ class DB(Shared.DC.ZRDB.THUNK.THUNKED_TM):
                 'width': width,
                 'null': null_ok,
                 })
-
-        if self.page_charset:
-            conv_result=[]
-            for r in result:
-                rs = []
-                for item in r:
-                    try:
-                        rs.append(item.encode(self.page_charset, 'ignore'))
-                    except:
-                        rs.append(item)
-                conv_result.append(rs)
-            result = conv_result
 
         return items, result
 
