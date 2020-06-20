@@ -45,7 +45,7 @@ class Connection(Shared.DC.ZRDB.Connection.Connection):
     database_type=database_type
     id='%s_database_connection' % database_type
     meta_type=title='Z %s Database Connection' % database_type
-    icon='misc_/Z%sDA/conn' % database_type
+    zmi_icon = 'fas fa-database'
     data_dir=data_dir
 
     manage_properties=HTMLFile('dtml/connectionEdit', globals(),

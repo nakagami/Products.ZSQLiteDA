@@ -10,12 +10,7 @@
 # FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
-import os
-from App.ImageFile import ImageFile
 from . import DA
-
-database_type='SQLite'
-
 
 def initialize(context):
 
@@ -25,4 +20,3 @@ def initialize(context):
         constructors=(DA.manage_addZSQLiteConnectionForm,
                       DA.manage_addZSQLiteConnection),
         icon='www/da.gif')
-
