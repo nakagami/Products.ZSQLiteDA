@@ -18,5 +18,5 @@ def initialize(context):
         DA.Connection,
         permission='Add Z SQLite Database Connections',
         constructors=(DA.manage_addZSQLiteConnectionForm,
-                      DA.manage_addZSQLiteConnection),
-        icon='www/da.gif')
+                      DA.manage_addZSQLiteConnection)
+        )
