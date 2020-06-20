@@ -11,10 +11,6 @@
 #
 ##############################################################################
 database_type='SQLite'
-__doc__='''%s Database Connection
-
-$Id: DA.py,v 1.10 2009/08/08 08:18:24 nakagami Exp $''' % database_type
-__version__='$Revision: 1.10 $'[11:-2]
 
 import sys
 from _thread import allocate_lock
@@ -29,7 +25,7 @@ _connections_lock=allocate_lock()
 
 data_sources=manage_DataSources
 
-manage_addZSQLiteConnectionForm=HTMLFile('dtml/connectionAdd',globals())
+manage_addZSQLiteConnectionForm=HTMLFile('dtml/connectionAdd', globals())
 
 def manage_addZSQLiteConnection(
     self, id, title, connection, REQUEST=None):
