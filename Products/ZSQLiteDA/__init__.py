@@ -16,10 +16,6 @@ from . import DA
 
 database_type='SQLite'
 
-misc_={'conn': ImageFile('images/DBAdapterFolder_icon.gif', globals()),
-        'table': ImageFile('images/table.gif', globals()),
-}
-
 
 def initialize(context):
 
@@ -28,5 +24,5 @@ def initialize(context):
         permission='Add Z SQLite Database Connections',
         constructors=(DA.manage_addZSQLiteConnectionForm,
                       DA.manage_addZSQLiteConnection),
-    )
+        icon='www/da.gif')
 
