@@ -18,7 +18,6 @@ from _thread import allocate_lock
 from .db import DB, manage_DataSources, data_dir
 import Shared.DC.ZRDB.Connection
 from App.special_dtml import HTMLFile
-from App.ImageFile import ImageFile
 import Acquisition
 from ExtensionClass import Base
 
@@ -28,11 +27,6 @@ _connections_lock=allocate_lock()
 data_sources=manage_DataSources
 
 addConnectionForm=HTMLFile('dtml/connectionAdd',globals())
-
-
-misc_={'conn': ImageFile('images/DBAdapterFolder_icon.gif', globals()),
-        'table': ImageFile('images/table.gif', globals()),
-}
 
 
 def manage_addZSQLiteConnectionForm(self, REQUEST, *args, **kw):
