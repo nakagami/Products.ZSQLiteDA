@@ -15,10 +15,10 @@ import sqlite3
 
 from DateTime import DateTime
 import Shared.DC.ZRDB.THUNK
+import App.ApplicationManager
 
-data_dir= os.path.abspath(
-    os.path.join(os.path.dirname(os.environ['CLIENT_HOME']), 'sqlite')
-)
+instancepath = App.ApplicationManager.getConfiguration().instancehome
+data_dir=os.path.abspath(os.path.join(instancepath, 'var', 'sqlite'))
 
 def manage_DataSources():
 
