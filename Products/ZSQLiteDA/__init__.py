@@ -11,6 +11,11 @@
 #
 ##############################################################################
 from . import DA
+from App.ImageFile import ImageFile
+
+misc_={'conn': ImageFile('images/DBAdapterFolder_icon.gif', globals()),
+        'table': ImageFile('images/table.gif', globals()),
+}
 
 def initialize(context):
 
