@@ -50,6 +50,9 @@ def manage_addZSQLiteConnection(
 
 class Connection(Shared.DC.ZRDB.Connection.Connection):
     " "
+    
+    _isAnSQLConnection = True
+    
     manage_options = Shared.DC.ZRDB.Connection.Connection.manage_options+(
         {'label': 'Browse', 'action': 'manage_browse'},
         # {'label': 'Design', 'action':'manage_tables'},
