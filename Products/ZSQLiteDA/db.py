@@ -15,10 +15,10 @@ import sqlite3
 
 from DateTime import DateTime
 import Shared.DC.ZRDB.THUNK
+import App.ApplicationManager
 
-data_dir= os.path.abspath(
-    os.path.join(os.path.dirname(os.environ['CLIENT_HOME']), 'sqlite')
-)
+instancepath = App.ApplicationManager.getConfiguration().instancehome
+data_dir = os.path.abspath(os.path.join(instancepath, 'var', 'sqlite'))
 
 def manage_DataSources():
 
@@ -122,3 +122,23 @@ class DB(Shared.DC.ZRDB.THUNK.THUNKED_TM):
 
     def _abort(self):
         conn.db.rollback()
+
+    def tables(self,*args,**kw):
+        self._begin()
+        c = self.db.cursor()
+        c.execute("SELECT name, type FROM sqlite_master WHERE type='table' or type='view'")
+
+        result = []
+        rs = c.fetchall()
+        for r in rs:
+            result.append({'TABLE_NAME':r[0], 'TABLE_TYPE':r[1]})
+        self._finish()
+        return result
+
+    def sqlscript(self, table_name):
+        self._begin()
+        c = self.db.cursor()
+        c.execute("SELECT sql FROM sqlite_master WHERE name='%s'" % table_name)
+        sql = c.fetchone()[0]
+        self._finish()
+        return sql

@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 
-version = '0.7.0'
+version = '0.7.3'
 
 setup(name='Products.ZSQLiteDA',
       version=version,
@@ -12,6 +12,7 @@ setup(name='Products.ZSQLiteDA',
       classifiers=[
         "Programming Language :: Python",
         "Framework :: Zope :: 4",
+        "Framework :: Zope :: 5",
         "License :: OSI Approved :: Zope Public License",
         ],
       keywords='SQLite',

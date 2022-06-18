@@ -2,7 +2,7 @@ ZSQLiteDA
 =========
 
 The ZSQLiteDA https://github.com/nakagami/Products.ZSQLiteDA provides
-support for SQLite database adapter objects in the Zope 4.
+support for SQLite database adapter objects in the Zope 4 and 5.
 
 Installation
 -----------------
