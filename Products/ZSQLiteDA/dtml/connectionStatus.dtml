@@ -1,0 +1,46 @@
+<dtml-var manage_page_header>
+
+<dtml-with "_(management_view='Status')">
+  <dtml-var manage_tabs>
+</dtml-with>
+
+<main class="container-fluid">
+  <dtml-let database="connection_string">
+    <dtml-if database>
+      <p class="form-text">
+        The database connection is <dtml-if connected>open<dtml-else>closed</dtml-if>.
+      </p>
+
+      <div class="zmi-controls">
+
+        <dtml-if connected>
+          <form action="manage_close_connection" method="get">
+          <input class="btn btn-primary" type="submit" name="submit"
+           value="Close Connection">
+          </form>
+        <dtml-else>
+          <form action="manage_open_connection" method="get">
+          <input class="btn btn-primary" type="submit" name="submit"
+           value="Open Connection">
+          </form>
+        </dtml-if>
+
+      </div>
+    <dtml-else>
+      <p class="form-text">
+        No database selected! Please select a database in the Properties tab.
+      </p>
+    </dtml-if>
+
+    <h3>Info</h3>
+    <p>
+      <dtml-if database>
+        Database: <dtml-var database><br>
+      </dtml-if>
+      directory: <dtml-var data_dir>
+    </p>
+  </dtml-let>
+
+</main>
+
+<dtml-var manage_page_footer>
