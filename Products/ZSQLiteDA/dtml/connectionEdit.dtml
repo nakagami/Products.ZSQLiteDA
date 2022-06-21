@@ -5,61 +5,90 @@
 <table cellspacing="0" cellpadding="2" border="0">
   <tr>
     <td align="left" valign="top">
-    <div class="form-label">
-    Id
-    </div>
+      <div class="form-label">
+        Id
+      </div>
     </td>
     <td align="left" valign="top">
-    <div class="form-text">
-    <dtml-var id>
-    </div>
-    </td>
-  </tr>
-  <tr>
-    <td align="left" valign="top">
-    <div class="form-optional">
-    Title
-    </div>
-    </td>
-    <td align="left" valign="top">
-    <input type="text" name="title" size="40" 
-     value="<dtml-var title html_quote>" />
+      <div class="form-text">
+        <dtml-var id>
+      </div>
     </td>
   </tr>
   <tr>
     <td align="left" valign="top">
-    <div class="form-label">
-    Data Source
-    </div>
+      <div class="form-optional">
+        Title
+      </div>
     </td>
     <td align="left" valign="top">
-    <div class="form-text">
-    <em>
-	  Additional data sources may be created by making additional
-	  database file in the <code><dtml-var data_dir></code> subdirectory of
-          your Zope installation.
-    </em>
-    </div>
-    <div class="form-element">
-    <select name="connection_string" size="5">
-    <dtml-in data_sources>
-    <option value="<dtml-var sequence-key html_quote>"<dtml-if 
-     "_['sequence-key']==connection_string"> selected</dtml-if>><dtml-var 
-     sequence-key><dtml-if sequence-item>, <dtml-var 
-     sequence-item></dtml-if></option>
-    </dtml-in>
-    </select>
-    </div>
+      <input type="text" name="title" size="40"
+             value="<dtml-var title html_quote>" />
+    </td>
+  </tr>
+  <tr>
+    <td align="left" valign="top">
+      <div class="form-optional">
+        Data directory
+        <dtml-if "data_dir != DEFAULT_DATA_DIR">
+        <br><a onclick="getElementById('data_dir').value='<dtml-var DEFAULT_DATA_DIR>'">
+          &lt;reset to default&gt;
+        </a></dtml-if>
+      </div>
+    </td>
+    <td align="left" valign="top">
+      <input type="text" name="data_dir" id="data_dir"
+             value="<dtml-var data_dir html_quote>" />
+    </td>
+  </tr>
+  <dtml-if data_dir_is_default>
+    <tr>
+      <td align="left" valign="top">
+        <div class="form-optional">
+          New database
+        </div>
+      </td>
+      <td align="left" valign="top">
+        <input type="text" name="new_database" size="40"
+               value="" />
+      </td>
+    </tr>
+  </dtml-if>
+  <tr>
+    <td align="left" valign="top">
+      <div class="form-label">
+        Data Source
+      </div>
+    </td>
+    <td align="left" valign="top">
+      <dtml-unless data_dir_is_default>
+        <div class="form-text">
+          <em>
+      	  Additional data sources may be created by making additional
+      	  database files in your data directory (<code><dtml-var data_dir></code>).
+          </em>
+        </div>
+      </dtml-unless>
+      <div class="form-element">
+        <select name="connection_string" size="5">
+          <dtml-in "data_sources(data_dir=data_dir)">
+            <option value="<dtml-var sequence-key html_quote>"<dtml-if
+             "_['sequence-key']==connection_string"> selected</dtml-if>><dtml-var
+             sequence-key><dtml-if sequence-item>, <dtml-var
+             sequence-item></dtml-if></option>
+          </dtml-in>
+      </select>
+      </div>
     </td>
   </tr>
   <tr>
     <td align="left" valign="top">
     </td>
     <td align="left" valign="top">
-    <div class="form-element">
-    <input class="form-element" type="submit" name="submit" 
-     value="Save Changes" /> 
-    </div>
+      <div class="form-element">
+        <input class="form-element" type="submit" name="submit"
+               value="Save Changes" />
+      </div>
     </td>
   </tr>
 </table>
