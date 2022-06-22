@@ -19,11 +19,18 @@ from AccessControl.Permissions import change_database_connections
 from AccessControl.SecurityInfo import ClassSecurityInfo
 # from OFS.PropertyManager import PropertyManager
 from App.Dialogs import MessageDialog
-from .db import DB, manage_DataSources, init_new_db, DEFAULT_DATA_DIR
 import Shared.DC.ZRDB.Connection
 from App.special_dtml import HTMLFile
 import Acquisition
 from ExtensionClass import Base
+from sqlite3 import OperationalError as sqlite3_OperationalError
+
+from .db import \
+    DB, \
+    DEFAULT_DATA_DIR, \
+    check_database, \
+    create_db_file, \
+    manage_DataSources
 
 _connections = {}
 _connections_lock = allocate_lock()
@@ -33,7 +40,14 @@ data_sources = manage_DataSources
 addConnectionForm = HTMLFile('dtml/connectionAdd', globals())
 
 
-def manage_addZSQLiteConnectionForm(self, REQUEST, *args, **kw):
+def extract_error(e):
+    try:
+        return e.args[0]
+    except Exception:
+        return e
+
+
+def manage_addZSQLiteConnectionForm(self, REQUEST, *args, **kw) -> HTMLFile:
     """Add a connection form"""
 
     return addConnectionForm(
@@ -43,9 +57,29 @@ def manage_addZSQLiteConnectionForm(self, REQUEST, *args, **kw):
         data_sources=data_sources(data_dir=DEFAULT_DATA_DIR))
 
 
-def manage_addZSQLiteConnection(self, id, title, connection, REQUEST=None):
+def manage_addZSQLiteConnection(self, id: str, title: str,
+                                data_dir: str,
+                                connection: str = '',
+                                REQUEST=None) -> 'self.manage_main':
     """Add a DB connection to a folder"""
 
+    db_path = os.path.join(data_dir, connection)
+
+    if not id:
+        return MessageDialog(
+            title='Edited',
+            message='Please provide an id for the database adapter!',
+            action='javascript:history.back()'
+        )
+
+    try:
+        check_database(dbpath=db_path)
+    except sqlite3_OperationalError as e:
+        return MessageDialog(
+            title='Edited',
+            message=extract_error(e),
+            action='javascript:history.back()'
+        )
     # Note - ZSQLiteDA's connect immediately check is alway false
     self._setObject(id, Connection(
         id, title, connection, REQUEST))
@@ -60,13 +94,11 @@ class Connection(Shared.DC.ZRDB.Connection.Connection):
     _isAnSQLConnection = True
     data_dir = DEFAULT_DATA_DIR
 
-    def __init__(self, id, title, connection_string, REQUEST=None):
+    def __init__(self, id: str, title: str,
+                 connection_string: str = '', REQUEST=None) -> None:
         data_dir = REQUEST.get('data_dir', DEFAULT_DATA_DIR)
-
-        init_new_db(data_dir=data_dir, connection_string=connection_string)
-
+        create_db_file(data_dir=data_dir, connection_string=connection_string)
         self.data_dir = data_dir
-
         super().__init__(id, title, connection_string)
 
     def data_dir_is_default(self):
@@ -84,9 +116,7 @@ class Connection(Shared.DC.ZRDB.Connection.Connection):
     meta_type = title = f'Z {database_type} Database Connection'
     zmi_icon = 'fas fa-database'
 
-    manage_main = HTMLFile(
-        'dtml/connectionStatus', globals()
-    )
+    manage_main = HTMLFile('dtml/connectionStatus', globals())
 
     manage_properties = HTMLFile(
         'dtml/connectionEdit', globals(),
@@ -95,31 +125,52 @@ class Connection(Shared.DC.ZRDB.Connection.Connection):
     )
 
     @security.protected(change_database_connections)
-    def manage_edit(self, title, data_dir, connection_string='',
-                    new_database='', check=None, REQUEST=None):
+    def manage_edit(self, title: str, data_dir: str, connection_string: str = '',
+                    new_database: str = '', check=None, REQUEST=None) -> MessageDialog:
         """Change connection
         """
         if new_database:
+            if os.path.exists(os.path.join(data_dir, new_database)):
+                return MessageDialog(
+                    title='Edited',
+                    message=(
+                        f'The database file <code>{new_database}</code> already exists '
+                        f'in {data_dir}!'),
+                    action='./manage_properties')
+
             connection_string = new_database
 
         if data_dir != self.data_dir:  # data_dir is changed
             connection_string = '' or new_database
 
-        if data_dir == DEFAULT_DATA_DIR:
-            init_new_db(data_dir=data_dir, connection_string=connection_string)
-        elif not os.path.exists(data_dir):
+        if not os.path.exists(data_dir):
             return MessageDialog(
                 title='Edited',
-                message=f'The directory <code>{self.data_dir}</code> does not exist. Please create it on the file system.',
-                action='./manage_properties')
-
-        if not os.path.exists(os.path.join(data_dir, connection_string)):
-            return MessageDialog(
-                title='Edited',
-                message=f'The database file <strong>{connection_string}</strong> does not exist in {data_dir}. Please create it on the file system.',
+                message=(
+                    f'The directory <code>{data_dir}</code> does not exist. '
+                    'Please create it on the file system.'),
                 action='./manage_properties')
 
         self.data_dir = data_dir
+
+        if connection_string:
+            try:
+                create_db_file(data_dir=data_dir, connection_string=connection_string)
+            except sqlite3_OperationalError as e:
+                return MessageDialog(
+                    title='Edited',
+                    message=extract_error(e),
+                    action='./manage_properties')
+
+            try:
+                check_database(dbpath=os.path.join(data_dir, connection_string))
+            except sqlite3_OperationalError as e:
+                if self.connection_string == connection_string:
+                    self.edit(title, '', check)
+                return MessageDialog(
+                    title='Edited',
+                    message=extract_error(e),
+                    action='./manage_properties')
 
         if self.connected():
             self.manage_close_connection()
@@ -133,12 +184,13 @@ class Connection(Shared.DC.ZRDB.Connection.Connection):
                 message=f'<strong>{esc_id}</strong> has been edited.',
                 action='./manage_properties')
 
-    def connected(self):
+    def connected(self) -> str:
         if hasattr(self, '_v_database_connection'):
             return self._v_database_connection.opened
+        print('closed')
         return ''
 
-    def connect(self, s):
+    def connect(self, s: str) -> 'self':
         _connections_lock.acquire()
         try:
             c = _connections
@@ -147,7 +199,7 @@ class Connection(Shared.DC.ZRDB.Connection.Connection):
         finally:
             _connections_lock.release()
 
-    def tpValues(self):
+    def tpValues(self) -> list:
         r = []
         if not hasattr(self, '_v_database_connection'):
             return r
@@ -176,7 +228,7 @@ class Connection(Shared.DC.ZRDB.Connection.Connection):
         # self._v_tpValues=r
         return r
 
-    def __getitem__(self, name):
+    def __getitem__(self, name: str):
         if name == 'tableNamed':
             if not hasattr(self, '_v_tables'):
                 self.tpValues()
@@ -201,7 +253,7 @@ class TableBrowserCollection(Acquisition.Implicit):
 
 
 class Browser(Base):
-    def __getattr__(self, name):
+    def __getattr__(self, name: str) -> str:
         try:
             return self._d[name]
         except KeyError:
@@ -212,7 +264,7 @@ class TableBrowser(Browser, Acquisition.Implicit):
     icon = 'what'
     Description = check = ''
 
-    def tpValues(self):
+    def tpValues(self) -> list:
         r = []
         tname = self.__name__
         b = SQLBrowser()
@@ -221,33 +273,33 @@ class TableBrowser(Browser, Acquisition.Implicit):
         r.append(b)
         return r
 
-    def tpId(self):
+    def tpId(self) -> str:
         return self._d['TABLE_NAME']
 
-    def tpURL(self):
+    def tpURL(self) -> str:
         return "Table/%s" % self._d['TABLE_NAME']
 
-    def Name(self):
+    def Name(self) -> str:
         return self._d['TABLE_NAME']
 
-    def Type(self):
+    def Type(self) -> str:
         return self._d['TABLE_TYPE']
 
 
 class SQLBrowser(Browser):
     icon = None
 
-    def tpId(self):
+    def tpId(self) -> str:
         return "SQL"
 
-    def tpURL(self):
+    def tpURL(self) -> str:
         return "Table/%s/SQL" % self._parent._d['TABLE_NAME']
 
-    def Name(self):
+    def Name(self) -> str:
         return ''
 
-    def Type(self):
+    def Type(self) -> str:
         return ''
 
-    def Description(self):
+    def Description(self) -> str:
         return self._d['SQL']

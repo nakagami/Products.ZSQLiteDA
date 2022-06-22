@@ -34,7 +34,13 @@
         </div>
         </td>
         <td align="left" valign="top">
-        <input type="text" name="data_dir" size="40" value="<dtml-var data_dir>" />
+          <input type="hidden" name="data_dir" value="&dtml-data_dir;">
+          <div class="form-text">
+            <em>
+              <strong><dtml-var data_dir></strong><br>
+              You can choose another data directory in the "Properties" tab after creation of the database adapter.
+            </em>
+          </div>
         </td>
       </tr>
       <tr>

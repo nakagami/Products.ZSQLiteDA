@@ -31,9 +31,13 @@
       <div class="form-optional">
         Data directory
         <dtml-if "data_dir != DEFAULT_DATA_DIR">
-        <br><a onclick="getElementById('data_dir').value='<dtml-var DEFAULT_DATA_DIR>'">
-          &lt;reset to default&gt;
-        </a></dtml-if>
+          <br>
+          <button type="button"
+                  class="form-element btn btn-secondary zmi-patch"
+                  onclick="getElementById('data_dir').value='<dtml-var DEFAULT_DATA_DIR>'">
+            reset to default
+          </button>
+        </dtml-if>
       </div>
     </td>
     <td align="left" valign="top">
@@ -93,6 +97,4 @@
   </tr>
 </table>
 </form>
-
 <dtml-var manage_page_footer>
-
