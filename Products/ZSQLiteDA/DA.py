@@ -17,7 +17,6 @@ from _thread import allocate_lock
 from html import escape
 from AccessControl.Permissions import change_database_connections
 from AccessControl.SecurityInfo import ClassSecurityInfo
-# from OFS.PropertyManager import PropertyManager
 from App.Dialogs import MessageDialog
 import Shared.DC.ZRDB.Connection
 from App.special_dtml import HTMLFile
@@ -25,12 +24,8 @@ import Acquisition
 from ExtensionClass import Base
 from sqlite3 import OperationalError as sqlite3_OperationalError
 
-from .db import \
-    DB, \
-    DEFAULT_DATA_DIR, \
-    check_database, \
-    create_db_file, \
-    manage_DataSources
+from .db import DB, DEFAULT_DATA_DIR, check_database, \
+    create_db_file, manage_DataSources
 
 _connections = {}
 _connections_lock = allocate_lock()
@@ -42,9 +37,9 @@ addConnectionForm = HTMLFile('dtml/connectionAdd', globals())
 
 def extract_error(e):
     try:
-        return e.args[0]
+        return e.args[0].replace('\n', '<br>')
     except Exception:
-        return e
+        return str(e).replace('\n', '<br>')
 
 
 def manage_addZSQLiteConnectionForm(self, REQUEST, *args, **kw) -> HTMLFile:
@@ -60,7 +55,7 @@ def manage_addZSQLiteConnectionForm(self, REQUEST, *args, **kw) -> HTMLFile:
 def manage_addZSQLiteConnection(self, id: str, title: str,
                                 data_dir: str,
                                 connection: str = '',
-                                REQUEST=None) -> 'self.manage_main':
+                                REQUEST=None) -> 'manage_main':
     """Add a DB connection to a folder"""
 
     db_path = os.path.join(data_dir, connection)
@@ -101,12 +96,11 @@ class Connection(Shared.DC.ZRDB.Connection.Connection):
         self.data_dir = data_dir
         super().__init__(id, title, connection_string)
 
-    def data_dir_is_default(self):
+    def data_dir_is_default(self):  # used in the DTML forms
         return self.data_dir == DEFAULT_DATA_DIR
 
     manage_options = Shared.DC.ZRDB.Connection.Connection.manage_options + (
         {'label': 'Browse', 'action': 'manage_browse'},
-        # {'label': 'Design', 'action':'manage_tables'},
     )
 
     manage_browse = HTMLFile('dtml/browse', globals())
@@ -126,7 +120,7 @@ class Connection(Shared.DC.ZRDB.Connection.Connection):
 
     @security.protected(change_database_connections)
     def manage_edit(self, title: str, data_dir: str, connection_string: str = '',
-                    new_database: str = '', check=None, REQUEST=None) -> MessageDialog:
+                    new_database: str = '', check=None, REQUEST=None) -> str:
         """Change connection
         """
         if new_database:
@@ -134,7 +128,7 @@ class Connection(Shared.DC.ZRDB.Connection.Connection):
                 return MessageDialog(
                     title='Edited',
                     message=(
-                        f'The database file <code>{new_database}</code> already exists '
+                        f'The database file <code>{new_database}</code> already exists<br>'
                         f'in {data_dir}!'),
                     action='./manage_properties')
 
@@ -147,8 +141,9 @@ class Connection(Shared.DC.ZRDB.Connection.Connection):
             return MessageDialog(
                 title='Edited',
                 message=(
-                    f'The directory <code>{data_dir}</code> does not exist. '
-                    'Please create it on the file system.'),
+                    f'The directory <code>{data_dir}</code> does not exist.<br>'
+                    'Please create it on the file system.'
+                ),
                 action='./manage_properties')
 
         self.data_dir = data_dir
