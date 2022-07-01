@@ -96,7 +96,7 @@ def manage_DataSources(data_dir: str = DEFAULT_DATA_DIR) -> map:
         lambda d: (d, ''),
         filter(lambda f, i=os.path.isfile, d=data_dir, j=os.path.join:
                i(j(d, f)),
-               os.listdir(data_dir))
+               sorted(os.listdir(data_dir)))
     )
 
 
