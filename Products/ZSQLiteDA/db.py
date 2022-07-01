@@ -136,11 +136,6 @@ class DB(Shared.DC.ZRDB.THUNK.THUNKED_TM):
 
     def open(self):
         connection = self.connection
-        if connection != ':memory:':
-            connection = os.path.join(
-                DEFAULT_DATA_DIR,
-                connection
-            )
         self.db = sqlite3.connect(connection, check_same_thread=False)
         self.opened = DateTime()
 

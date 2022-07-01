@@ -189,6 +189,7 @@ class Connection(Shared.DC.ZRDB.Connection.Connection):
         _connections_lock.acquire()
         try:
             c = _connections
+            s = os.path.join(self.data_dir, s)
             self._v_database_connection = c[s] = DB(s)
             return self
         finally:
