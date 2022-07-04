@@ -182,7 +182,6 @@ class Connection(Shared.DC.ZRDB.Connection.Connection):
     def connected(self) -> str:
         if hasattr(self, '_v_database_connection'):
             return self._v_database_connection.opened
-        print('closed')
         return ''
 
     def connect(self, s: str) -> 'self':
