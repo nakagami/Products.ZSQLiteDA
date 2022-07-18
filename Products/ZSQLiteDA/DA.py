@@ -10,8 +10,6 @@
 # FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
-database_type = 'SQLite'
-
 import os
 from _thread import allocate_lock
 from html import escape
@@ -27,6 +25,7 @@ from sqlite3 import OperationalError as sqlite3_OperationalError
 from .db import DB, DEFAULT_DATA_DIR, check_database, \
     create_db_file, manage_DataSources
 
+database_type = 'SQLite'
 _connections = {}
 _connections_lock = allocate_lock()
 
@@ -55,7 +54,7 @@ def manage_addZSQLiteConnectionForm(self, REQUEST, *args, **kw) -> HTMLFile:
 def manage_addZSQLiteConnection(self, id: str, title: str,
                                 data_dir: str,
                                 connection: str = '',
-                                REQUEST=None) -> 'manage_main':
+                                REQUEST=None) -> 'Connection.manage_main':
     """Add a DB connection to a folder"""
 
     db_path = os.path.join(data_dir, connection)
@@ -184,7 +183,7 @@ class Connection(Shared.DC.ZRDB.Connection.Connection):
             return self._v_database_connection.opened
         return ''
 
-    def connect(self, s: str) -> 'self':
+    def connect(self, s: str) -> 'Connection':
         _connections_lock.acquire()
         try:
             c = _connections
@@ -202,25 +201,17 @@ class Connection(Shared.DC.ZRDB.Connection.Connection):
         try:
             for d in c.tables(rdb=0):
                 try:
-                    name = d['TABLE_NAME']
                     b = TableBrowser()
-                    b.__name__ = name
+                    b.__name__ = d['TABLE_NAME']
                     b._d = d
                     b._c = c
-                    # b._columns=c.columns(name)
-                    try:
-                        b.icon = d['TABLE_TYPE']
-                    except Exception:
-                        pass
+                    b.icon = d.get('TABLE_TYPE')
                     r.append(b)
-                    # tables[name]=b
                 except Exception:
-                    # print d['TABLE_NAME'], sys.exc_type, sys.exc_value
                     pass
 
         finally:
-            pass  # print sys.exc_type, sys.exc_value
-        # self._v_tpValues=r
+            pass
         return r
 
     def __getitem__(self, name: str):
