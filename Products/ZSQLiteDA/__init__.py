@@ -10,6 +10,12 @@
 # FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
+# Single source of truth for the package version: setup.py parses this
+# line, DA.py imports it for the ZMI display. Must stay above the DA
+# import -- DA.py does ``from . import __version__`` while this module
+# is still initialising.
+__version__ = '0.9.0'
+
 from . import DA
 from App.ImageFile import ImageFile
 

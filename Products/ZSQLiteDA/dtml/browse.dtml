@@ -1,16 +1,111 @@
 <dtml-var manage_page_header>
 <dtml-var manage_tabs>
-    <dtml-if connected>
-      <dtml-tree header=info>
-        <dtml-if icon>
-        <IMG SRC="&dtml-BASEPATH1;/misc_/ZSQLiteDA/&dtml-icon;"
-         ALT="&dtml-Type;" BORDER="0">
-        </dtml-if>
-        &dtml-Name;<dtml-var Description html_quote newline_to_br>
-      </dtml-tree>
+
+<style>
+.zsql-chev { transition: transform .15s; }
+.zsql-browse button[aria-expanded="true"] .zsql-chev { transform: rotate(90deg); }
+.zsql-browse .btn-link, .zsql-browse .btn-link:hover { color: #6c757d; }
+.zsql-sql { white-space: pre-wrap; word-break: break-word; font-size: 12.5px; }
+</style>
+
+<main class="container-fluid">
+<dtml-if connected>
+  <dtml-let tables="manage_browse_data()">
+    <dtml-if tables>
+      <p class="text-muted mt-3 mb-2">
+        <i class="fas fa-database"></i>
+        <dtml-var expr="_.len(tables)"> object<dtml-if "_.len(tables) != 1">s</dtml-if>
+      </p>
+      <div class="accordion zsql-browse mb-3" id="zsql-browse">
+        <dtml-in expr="tables" mapping>
+          <div class="card">
+            <div class="card-header p-0" id="zsql-head-&dtml-sequence-index;">
+              <button class="btn btn-link btn-block text-left text-decoration-none collapsed py-2"
+                      type="button" data-toggle="collapse"
+                      data-target="#zsql-collapse-&dtml-sequence-index;"
+                      aria-expanded="false"
+                      aria-controls="zsql-collapse-&dtml-sequence-index;">
+                <i class="fas fa-chevron-right zsql-chev mr-1"></i>
+                <dtml-if "kind == 'view'"><i class="fas fa-eye mr-1"></i><dtml-else><i class="fas fa-table mr-1"></i></dtml-if>
+                <code><dtml-var name html_quote></code>
+                <dtml-if "kind == 'view'"><span class="badge badge-secondary ml-1">view</span></dtml-if>
+                <span class="float-right text-muted small">
+                  <dtml-var expr="_.len(columns)"> column<dtml-if "_.len(columns) != 1">s</dtml-if>
+                </span>
+              </button>
+            </div>
+            <div id="zsql-collapse-&dtml-sequence-index;" class="collapse"
+                 aria-labelledby="zsql-head-&dtml-sequence-index;">
+              <div class="card-body">
+                <table class="table table-sm table-striped mb-3">
+                  <thead>
+                    <tr>
+                      <th>Name</th><th>Type</th><th>Not null</th><th>Default</th><th>Key</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <dtml-in expr="columns" mapping>
+                      <tr>
+                        <td><code><dtml-var name html_quote></code></td>
+                        <td><code><dtml-var type html_quote></code></td>
+                        <td><dtml-if notnull><i class="fas fa-check text-success" title="not null"></i></dtml-if></td>
+                        <td><dtml-if default><code><dtml-var default html_quote></code><dtml-else><span class="text-muted">&mdash;</span></dtml-if></td>
+                        <td><dtml-if pk><i class="fas fa-key text-warning"></i> PK</dtml-if></td>
+                      </tr>
+                    </dtml-in>
+                  </tbody>
+                </table>
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <small class="text-muted">CREATE statement</small>
+                  <button type="button" class="btn btn-sm btn-outline-secondary zsql-copy">
+                    <i class="fas fa-copy"></i> Copy
+                  </button>
+                </div>
+                <pre class="zsql-sql border rounded bg-light p-2 mb-0"><dtml-var sql html_quote></pre>
+              </div>
+            </div>
+          </div>
+        </dtml-in>
+      </div>
     <dtml-else>
-    <br>
-    <h3>Database not connected!</h3>
-    <p>Browse tab can't show tables now. Please open connection on Status tab.</p>
+      <div class="alert alert-info mt-3">This database has no tables or views yet.</div>
     </dtml-if>
+  </dtml-let>
+<dtml-else>
+  <div class="alert alert-warning mt-3">
+    Database not connected &mdash; please open the connection on the Status tab.
+  </div>
+</dtml-if>
+</main>
+
+<script>
+(function () {
+  function fallbackCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+  var btns = document.querySelectorAll('.zsql-copy');
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].addEventListener('click', function () {
+      var btn = this;
+      var pre = btn.closest('.card-body').querySelector('pre.zsql-sql');
+      var text = pre.innerText;
+      var orig = btn.innerHTML;
+      var done = function () {
+        btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+        setTimeout(function () { btn.innerHTML = orig; }, 1500);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, function () { fallbackCopy(text); done(); });
+      } else {
+        fallbackCopy(text); done();
+      }
+    });
+  }
+})();
+</script>
+
 <dtml-var manage_page_footer>

@@ -2,115 +2,106 @@
 
 <dtml-var "manage_form_title(this(), _,
            form_title='Add Z %s Database Connection' % database_type,
-	   )">
+           )">
 
-<dtml-let data_sources="list(data_sources)">
+<main class="container-fluid">
+<dtml-if manage_tabs_message>
+  <div class="alert alert-danger" role="alert">
+    <dtml-var manage_tabs_message newline_to_br html_quote>
+  </div>
+</dtml-if>
+<dtml-let data_sources="list(data_sources)"
+          use_new="REQUEST.form.get('mode')=='new' or (not data_sources and REQUEST.form.get('mode')!='existing')">
   <form action="manage_addZ<dtml-var database_type>Connection" method="post">
-    <table cellspacing="0" cellpadding="2" border="0">
-      <tr>
-        <td align="left" valign="top">
-        <div class="form-label">
-        Id
+
+    <div class="form-group row">
+      <label for="zsql-id" class="col-sm-3 col-form-label">Id</label>
+      <div class="col-sm-9">
+        <input type="text" class="form-control" id="zsql-id" name="id"
+               value="<dtml-var "REQUEST.form.get('id', '')" html_quote>">
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="zsql-title" class="col-sm-3 col-form-label">Title</label>
+      <div class="col-sm-9">
+        <input type="text" class="form-control" id="zsql-title" name="title"
+               value="<dtml-var "REQUEST.form.get('title', '')" html_quote>">
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-3 col-form-label">Data directory</label>
+      <div class="col-sm-9">
+        <input type="hidden" name="data_dir" value="<dtml-var data_dir html_quote>">
+        <p class="form-control-plaintext text-muted mb-0">
+          <code><dtml-var data_dir html_quote></code><br>
+          <small>New databases are created here. You can choose another directory
+          in the Properties tab after creation.</small>
+        </p>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-3 col-form-label">Database</label>
+      <div class="col-sm-9">
+
+        <div class="form-check">
+          <input class="form-check-input zsql-mode" type="radio" name="mode"
+                 id="zsql-mode-existing" value="existing"
+                 <dtml-unless use_new>checked</dtml-unless>
+                 <dtml-unless data_sources>disabled</dtml-unless>>
+          <label class="form-check-label" for="zsql-mode-existing">Use existing database</label>
         </div>
-        </td>
-        <td align="left" valign="top">
-        <input type="text" name="id" size="40" value="" />
-        </td>
-      </tr>
-      <tr>
-        <td align="left" valign="top">
-        <div class="form-optional">
-        Title
+        <select class="form-control zsql-existing mb-3" name="connection" size="1"
+                <dtml-unless data_sources>disabled</dtml-unless>>
+          <dtml-in data_sources>
+            <option value="<dtml-var sequence-key html_quote>"
+                    <dtml-if "_['sequence-key']==REQUEST.form.get('connection')"> selected</dtml-if>
+                    ><dtml-var sequence-key html_quote></option>
+          </dtml-in>
+        </select>
+
+        <div class="form-check">
+          <input class="form-check-input zsql-mode" type="radio" name="mode"
+                 id="zsql-mode-new" value="new"
+                 <dtml-if use_new>checked</dtml-if>>
+          <label class="form-check-label" for="zsql-mode-new">Create new database</label>
         </div>
-        </td>
-        <td align="left" valign="top">
-        <input type="text" name="title" size="40" />
-        </td>
-      </tr>
-      <tr>
-        <td align="left" valign="top">
-        <div class="form-optional">
-        Data directory
-        </div>
-        </td>
-        <td align="left" valign="top">
-          <input type="hidden" name="data_dir" value="&dtml-data_dir;">
-          <div class="form-text">
-            <em>
-              <strong><dtml-var data_dir></strong><br>
-              You can choose another data directory in the "Properties" tab after creation of the database adapter.
-            </em>
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td align="left" valign="top">
-        <div class="form-label">
-        Data Source
-        </div>
-        </td>
-        <td align="left" valign="top">
-          <dtml-if data_sources>
-            <div class="form-element">
-              <select name="connection" size="5">
-                <dtml-in data_sources>
-                  <option value="<dtml-var sequence-key html_quote>"><dtml-var sequence-key><dtml-if sequence-item>, <dtml-var sequence-item></dtml-if></option>
-                </dtml-in>
-              </select>
-            </div>
-          <dtml-else>
-            <input type="text" name="new_connection" value="">
-            </div>
-            <div class="form-text">
-              <em>
-                Please provide a name for a new database<br>
-                You can also add or choose the database at a later time (in the Properties tab)
-              </em>
-            </div>
-          </dtml-if>
-        </td>
-      </tr>
-      <dtml-comment>
-      <tr>
-        <td align="left" valign="top">
-        <div class="form-label">
-        Data Source
-        </div>
-        </td>
-        <td align="left" valign="top">
-          <dtml-if data_sources>
-            <div class="form-element">
-              <select name="connection" size="5">
-              <dtml-in data_sources>
-                <option value="<dtml-var sequence-key html_quote>"><dtml-var sequence-key><dtml-if sequence-item>, <dtml-var sequence-item></dtml-if></option>
-              </dtml-in>
-              </select>
-            </div>
-          <dtml-else>
-            <input type="text" name="new_connection" value="">
-            </div>
-            <div class="form-text">
-              <em>
-                Please provide a name for a new database<br>
-                You can also add or choose the database at a later time (in the Properties tab)
-              </em>
-            </div>
-          </dtml-if>
-        </td>
-      </tr>
-      </dtml-comment>
-      <tr>
-        <td align="left" valign="top">
-        </td>
-        <td align="left" valign="top">
-        <div class="form-element">
-        <input class="form-element" type="submit" name="submit"
-         value=" Add " />
-        </div>
-        </td>
-      </tr>
-    </table>
+        <input type="text" class="form-control zsql-new" name="new_database"
+               placeholder="my-database.db"
+               value="<dtml-var "REQUEST.form.get('new_database', '')" html_quote>"
+               <dtml-unless use_new>disabled</dtml-unless>>
+        <small class="form-text text-muted">A new empty database file is created in
+        the data directory.</small>
+
+      </div>
+    </div>
+
+    <div class="zmi-controls">
+      <input class="btn btn-primary zsql-submit" type="submit" name="submit" value="Add">
+    </div>
   </form>
 </dtml-let>
+</main>
+
+<script>
+(function () {
+  var existing = document.querySelector('.zsql-existing');
+  var nw = document.querySelector('.zsql-new');
+  var newRadio = document.getElementById('zsql-mode-new');
+  var submit = document.querySelector('.zsql-submit');
+  function sync() {
+    var useNew = newRadio.checked && !newRadio.disabled;
+    if (existing) existing.disabled = useNew;
+    if (nw) nw.disabled = !useNew;
+    if (submit) submit.disabled = useNew && (!nw || nw.value.trim() === '');
+  }
+  var modes = document.querySelectorAll('.zsql-mode');
+  for (var i = 0; i < modes.length; i++) modes[i].addEventListener('change', sync);
+  if (nw) nw.addEventListener('input', sync);
+  sync();
+})();
+</script>
 
 <dtml-var manage_page_footer>
