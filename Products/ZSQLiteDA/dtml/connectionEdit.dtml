@@ -1,100 +1,188 @@
 <dtml-var manage_page_header>
 <dtml-var manage_tabs>
 
-<form action="manage_edit" method="POST">
-<table cellspacing="0" cellpadding="2" border="0">
-  <tr>
-    <td align="left" valign="top">
-      <div class="form-label">
-        Id
+<main class="container-fluid">
+  <form action="manage_edit" method="post">
+
+    <div class="form-group row">
+      <label class="col-sm-3 col-form-label">Id</label>
+      <div class="col-sm-9">
+        <p class="form-control-plaintext mb-0"><dtml-var id html_quote></p>
       </div>
-    </td>
-    <td align="left" valign="top">
-      <div class="form-text">
-        <dtml-var id>
+    </div>
+
+    <div class="form-group row">
+      <label for="zsql-title" class="col-sm-3 col-form-label">Title</label>
+      <div class="col-sm-9">
+        <input type="text" class="form-control" id="zsql-title" name="title"
+               value="<dtml-var title html_quote>">
       </div>
-    </td>
-  </tr>
-  <tr>
-    <td align="left" valign="top">
-      <div class="form-optional">
-        Title
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-3 col-form-label">ZSQLiteDA version</label>
+      <div class="col-sm-9">
+        <p class="form-control-plaintext mb-0"><dtml-var da_version html_quote></p>
       </div>
-    </td>
-    <td align="left" valign="top">
-      <input type="text" name="title" size="40"
-             value="<dtml-var title html_quote>" />
-    </td>
-  </tr>
-  <tr>
-    <td align="left" valign="top">
-      <div class="form-optional">
-        Data directory
-        <dtml-if "data_dir != DEFAULT_DATA_DIR">
-          <br>
-          <button type="button"
-                  class="form-element btn btn-secondary zmi-patch"
-                  onclick="getElementById('data_dir').value='<dtml-var DEFAULT_DATA_DIR>'">
-            reset to default
-          </button>
-        </dtml-if>
-      </div>
-    </td>
-    <td align="left" valign="top">
-      <input type="text" name="data_dir" id="data_dir"
-             value="<dtml-var data_dir html_quote>" />
-    </td>
-  </tr>
-  <dtml-if data_dir_is_default>
-    <tr>
-      <td align="left" valign="top">
-        <div class="form-optional">
-          New database
-        </div>
-      </td>
-      <td align="left" valign="top">
-        <input type="text" name="new_database" size="40"
-               value="" />
-      </td>
-    </tr>
-  </dtml-if>
-  <tr>
-    <td align="left" valign="top">
-      <div class="form-label">
-        Data Source
-      </div>
-    </td>
-    <td align="left" valign="top">
-      <dtml-unless data_dir_is_default>
-        <div class="form-text">
-          <em>
-      	  Additional data sources may be created by making additional
-      	  database files in your data directory (<code><dtml-var data_dir></code>).
-          </em>
-        </div>
-      </dtml-unless>
-      <div class="form-element">
-        <select name="connection_string" size="5">
-          <dtml-in "data_sources(data_dir=data_dir)">
-            <option value="<dtml-var sequence-key html_quote>"<dtml-if
-             "_['sequence-key']==connection_string"> selected</dtml-if>><dtml-var
-             sequence-key><dtml-if sequence-item>, <dtml-var
-             sequence-item></dtml-if></option>
+    </div>
+
+    <div class="form-group row">
+      <label for="data_dir" class="col-sm-3 col-form-label">Directory</label>
+      <div class="col-sm-9">
+        <select class="form-control" id="data_dir" name="data_dir">
+          <dtml-in expr="zsql_dir_options()">
+            <option value="<dtml-var sequence-item html_quote>"<dtml-if
+             "_['sequence-item']==data_dir"> selected</dtml-if>><dtml-var
+             sequence-item html_quote></option>
           </dtml-in>
-      </select>
+        </select>
+        <small class="form-text text-muted">Allowed directories are configured via
+          <code>directories-file</code> in the
+          <code>&lt;product-config Products.ZSQLiteDA&gt;</code> section of zope.conf;
+          the instance default is always available.</small>
       </div>
-    </td>
-  </tr>
-  <tr>
-    <td align="left" valign="top">
-    </td>
-    <td align="left" valign="top">
-      <div class="form-element">
-        <input class="form-element" type="submit" name="submit"
-               value="Save Changes" />
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-3 col-form-label">Database</label>
+      <div class="col-sm-9">
+
+        <div class="zsql-select-mode">
+          <div class="input-group">
+            <select class="form-control zsql-existing" name="connection_string" size="1">
+              <option value=""<dtml-if "not connection_string"> selected</dtml-if>></option>
+              <dtml-in "zsql_databases()">
+                <option value="<dtml-var sequence-item html_quote>"<dtml-if
+                 "_['sequence-item']==connection_string"> selected</dtml-if>><dtml-var
+                 sequence-item html_quote></option>
+              </dtml-in>
+            </select>
+            <div class="input-group-append">
+              <button type="button" class="btn btn-outline-secondary zsql-new-btn"
+                      <dtml-unless "zsql_can_create_here()">style="display:none"</dtml-unless>>
+                <i class="fas fa-plus"></i> New database&hellip;
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="zsql-create-mode" style="display:none">
+          <div class="input-group">
+            <input type="text" class="form-control zsql-new" name="new_database"
+                   placeholder="my-database.db" disabled>
+            <div class="input-group-append">
+              <button type="button" class="btn btn-outline-secondary zsql-cancel-new">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <dtml-if "not zsql_can_mount_here()">
+          <small class="form-text text-muted" id="zsql-hint">This directory is not in
+          the allowlist; choose an allowed directory.</small>
+        <dtml-elif "zsql_can_create_here()">
+          <small class="form-text text-muted" id="zsql-hint">Select a database, or add
+          one with &ldquo;New database&hellip;&rdquo;.</small>
+        <dtml-else>
+          <small class="form-text text-muted" id="zsql-hint">New databases cannot be
+          created in this directory; choose an existing one.</small>
+        </dtml-if>
+
       </div>
-    </td>
-  </tr>
-</table>
-</form>
+    </div>
+
+    <div class="zmi-controls">
+      <input class="btn btn-primary zsql-submit" type="submit" name="submit" value="Save changes">
+    </div>
+  </form>
+</main>
+
+<script>
+(function () {
+  var dirInput = document.getElementById('data_dir');
+  var existing = document.querySelector('.zsql-existing');
+  var nw = document.querySelector('.zsql-new');
+  var submit = document.querySelector('.zsql-submit');
+  var hint = document.getElementById('zsql-hint');
+  var selectMode = document.querySelector('.zsql-select-mode');
+  var createMode = document.querySelector('.zsql-create-mode');
+  var newBtn = document.querySelector('.zsql-new-btn');
+  var cancelBtn = document.querySelector('.zsql-cancel-new');
+
+  function inCreate() { return createMode.style.display !== 'none'; }
+
+  function updateSubmit() {
+    if (submit) submit.disabled = inCreate() && (!nw || nw.value.trim() === '');
+  }
+
+  function showSelect() {
+    selectMode.style.display = '';
+    createMode.style.display = 'none';
+    if (existing) existing.disabled = false;
+    if (nw) { nw.disabled = true; nw.value = ''; }
+    updateSubmit();
+  }
+
+  function showCreate() {
+    selectMode.style.display = 'none';
+    createMode.style.display = '';
+    if (existing) existing.disabled = true;
+    if (nw) { nw.disabled = false; nw.focus(); }
+    updateSubmit();
+  }
+
+  function setHint(d) {
+    if (!hint) return;
+    if (!d.can_mount) hint.textContent = 'This directory is not allowed.';
+    else if (d.can_create && !d.databases.length) hint.textContent = 'No databases here yet — add one with “New database…”.';
+    else if (d.can_create) hint.textContent = 'Select a database, or add one with “New database…”.';
+    else if (!d.databases.length) hint.textContent = 'No databases in this directory, and new ones cannot be created here.';
+    else hint.textContent = 'New databases cannot be created in this directory; choose an existing one.';
+  }
+
+  var lookup = 0;
+
+  function refreshList(dir) {
+    // build the URL without any credentials the page may carry in its address
+    // (fetch refuses a URL that embeds user:pass@)
+    var url = new URL('manage_listDataSources', window.location.href);
+    var ticket = ++lookup;
+    url.username = '';
+    url.password = '';
+    url.search = 'data_dir=' + encodeURIComponent(dir);
+    fetch(url.href, {credentials: 'same-origin', headers: {'Accept': 'application/json'}})
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        // A slower answer for an earlier directory must not replace the list
+        // the selector is showing now.
+        if (ticket !== lookup || (dirInput && dirInput.value !== dir)) return;
+        if (existing) {
+          var cur = existing.value;
+          var matched = false;
+          existing.innerHTML = '';
+          var blank = document.createElement('option');
+          blank.value = '';
+          existing.appendChild(blank);
+          d.databases.forEach(function (name) {
+            var o = document.createElement('option');
+            o.value = name; o.textContent = name;
+            if (name && name === cur) { o.selected = true; matched = true; }
+            existing.appendChild(o);
+          });
+          if (!matched) blank.selected = true;
+        }
+        if (newBtn) newBtn.style.display = d.can_create ? '' : 'none';
+        showSelect();          // a directory change resets to "use existing"
+        setHint(d);
+      })
+      .catch(function () { /* leave the form unchanged if the lookup fails */ });
+  }
+
+  if (newBtn) newBtn.addEventListener('click', showCreate);
+  if (cancelBtn) cancelBtn.addEventListener('click', showSelect);
+  if (nw) nw.addEventListener('input', updateSubmit);
+  if (dirInput) dirInput.addEventListener('change', function () { refreshList(this.value); });
+  showSelect();
+})();
+</script>
+
 <dtml-var manage_page_footer>

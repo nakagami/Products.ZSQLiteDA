@@ -1,2 +1,2 @@
-include README.rst
+include README.rst CHANGES.rst LICENSE.txt
 recursive-include Products *.gif *.dtml
