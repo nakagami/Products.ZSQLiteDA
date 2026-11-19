@@ -12,6 +12,8 @@ Security
   the instance ``var/sqlite`` directory can be used. Older releases could
   open an existing database from any absolute path. A listed directory is
   mount-only unless its line is prefixed with ``create``.
+- SQL ``ATTACH DATABASE`` statements are rejected so queries cannot bypass
+  the database-directory allowlist.
 - A database file name must be a plain file name. Paths, ``.`` and ``..``,
   and control characters are rejected.
 - A non-empty file is opened only when it starts with a SQLite header.

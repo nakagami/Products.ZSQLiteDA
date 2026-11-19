@@ -436,6 +436,12 @@ def format_sql(sql: str) -> str:
     return result
 
 
+def _deny_attach(action, arg1, arg2, dbname, source):
+    if action == sqlite3.SQLITE_ATTACH:
+        return sqlite3.SQLITE_DENY
+    return sqlite3.SQLITE_OK
+
+
 class DB(Shared.DC.ZRDB.THUNK.THUNKED_TM):
 
     opened = ''
@@ -443,6 +449,7 @@ class DB(Shared.DC.ZRDB.THUNK.THUNKED_TM):
     def open(self):
         connection = self.connection
         self.db = sqlite3.connect(connection, check_same_thread=False)
+        self.db.set_authorizer(_deny_attach)
         self.opened = DateTime()
 
     def close(self):
